@@ -56,14 +56,22 @@ widget, a **Pin on top** submenu (per widget), **Start with Windows**,
 - `Ctrl+Alt+O` — toggle all widgets visible/hidden
 - `Ctrl+Alt+C` — focus Quick Capture
 
-### Preferences
+### Opening Preferences / reopening widgets
 
-Tray → **Preferences…** opens a settings window to change the vault, toggle which
-widgets show, pin individual widgets on top, switch appearance
-(transparent ↔ acrylic wallpaper blur, with a relaunch button), and enable
-launch-on-login. Each widget can also be pinned from its own header (the
-thumbtack button); the header and the tray/preferences checkboxes stay in sync.
-All of it persists to `config.json` and is restored on next launch.
+Three ways, so you never have to dig for the tray icon:
+- **Gear button** in any widget's header → opens Preferences directly.
+- **Right-click the Sill taskbar icon** → jump list with **Show all widgets** and
+  **Preferences** (works because the single-instance lock forwards the flag to the
+  running app).
+- **Tray icon** → **Preferences…**, **Show all widgets**, or **Show widget ▸**.
+  (On Win11 the tray icon may sit in the ˄ hidden-icons overflow; drag it onto the
+  taskbar to keep it visible.)
+
+Preferences lets you change the vault, toggle which widgets show, pin individual
+widgets on top, switch appearance (transparent ↔ acrylic wallpaper blur, with a
+relaunch button), and enable launch-on-login. Each widget can also be pinned from
+its own header (the thumbtack); header and tray/preferences checkboxes stay in
+sync. All of it persists to `config.json` and is restored on next launch.
 
 ## Things to configure for your vault
 

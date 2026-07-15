@@ -16,6 +16,25 @@ let settingsWin = null;
 
 const ICON = path.join(__dirname, '../build/icon.ico');
 
+// Shared AppUserModelID → the widget windows collapse into one Sill taskbar
+// button (and match the installed shortcut's identity for correct icon/grouping).
+app.setAppUserModelId('io.friday430.sill');
+
+// Single instance: relaunching Sill (e.g. from the taskbar/Start Menu shortcut)
+// surfaces the existing widgets instead of opening a second copy.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', (_e, argv) => handleArgs(argv));
+}
+
+// Dispatch command-line flags used by the taskbar jump list. A relaunch with a
+// flag is forwarded here by the single-instance lock (via 'second-instance').
+function handleArgs(argv) {
+  if (argv && argv.includes('--preferences')) openSettings();
+  else showAll();
+}
+
 function createWidget(id) {
   if (windows.has(id)) return windows.get(id).show();
   const def = WIDGETS[id];
@@ -30,7 +49,7 @@ function createWidget(id) {
     minWidth: 240, minHeight: 120,
     icon: ICON,
     frame: false,
-    skipTaskbar: true,
+    skipTaskbar: false, // show in the taskbar; shared AppUserModelID groups them into one button
     resizable: true,
     hasShadow: false,
     alwaysOnTop: pinned,
@@ -187,6 +206,8 @@ function createTray() {
 }
 
 app.whenReady().then(() => {
+  if (!app.hasSingleInstanceLock()) return; // secondary instance: bail before creating windows
+
   const p = config.get('vaultPath');
   if (p) vault.open(p, () => broadcast('vault:changed'));
 
@@ -194,6 +215,14 @@ app.whenReady().then(() => {
   createTray();
   // keep the OS login item in sync with the saved preference
   app.setLoginItemSettings({ openAtLogin: config.get('openAtLogin') === true });
+
+  // right-click jump list on the taskbar / Start Menu icon
+  app.setUserTasks([
+    { program: process.execPath, arguments: '--show-all', iconPath: process.execPath, iconIndex: 0, title: 'Show all widgets', description: 'Show every Sill widget' },
+    { program: process.execPath, arguments: '--preferences', iconPath: process.execPath, iconIndex: 0, title: 'Preferences', description: 'Open Sill preferences' },
+  ]);
+  // on first launch the enabled widgets are already created above; only act on a flag
+  if (process.argv.includes('--preferences')) openSettings();
 
   globalShortcut.register('Control+Alt+O', toggleAll);
   globalShortcut.register('Control+Alt+C', () => {
@@ -265,4 +294,5 @@ ipcMain.handle('settings:set-enabled', (_e, ids) => {
 ipcMain.handle('settings:set-acrylic', (_e, flag) => { config.set('acrylic', flag); });
 ipcMain.handle('settings:set-login', (_e, flag) => { setOpenAtLogin(flag); });
 ipcMain.handle('settings:show-all', () => { showAll(); });
+ipcMain.handle('settings:open', () => { openSettings(); });
 ipcMain.handle('app:relaunch', () => { app.relaunch(); app.exit(0); });

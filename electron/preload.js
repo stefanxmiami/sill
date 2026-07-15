@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld('api', {
   // Per-window "always on top" (pin). getPin returns this window's current state.
   getPin:     () => ipcRenderer.invoke('win:pin-get'),
   togglePin:  () => ipcRenderer.invoke('win:pin-toggle'),
+  openSettings: () => ipcRenderer.invoke('settings:open'),
 
   // Preferences window
   readSettings:  () => ipcRenderer.invoke('settings:read'),
