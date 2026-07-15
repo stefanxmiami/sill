@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="#14161B"/>
+  <rect x="16.5" y="16.5" width="223" height="223" rx="47.5" fill="none" stroke="#E6E8EB" stroke-opacity="0.10" stroke-width="1"/>
+  <!-- back pane (ice, for contrast at small sizes) -->
+  <rect x="100" y="60" width="104" height="80" rx="18" fill="#E6E8EB"/>
+  <!-- front pane (dark glass, ice outline) -->
+  <rect x="52" y="116" width="104" height="80" rx="18" fill="#0E0F12" stroke="#E6E8EB" stroke-width="5"/>
+  <!-- mullion -->
+  <line x1="68" y1="127" x2="102" y2="127" stroke="#E6E8EB" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- gold urgency spine -->
+  <rect x="62" y="132" width="7.2" height="48" rx="3.6" fill="#E8B04B"/>
+</svg>
