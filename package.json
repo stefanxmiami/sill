@@ -8,9 +8,9 @@
   "main": "electron/main.js",
   "scripts": {
     "dev": "concurrently -k -n vite,electron -c cyan,magenta \"vite\" \"wait-on tcp:127.0.0.1:5173 && electron .\"",
-    "build": "vite build && electron-builder --win nsis",
-    "build:win": "vite build && electron-builder --win nsis",
-    "build:mac": "vite build && electron-builder --mac",
+    "build": "vite build && electron-builder --win nsis --publish never",
+    "build:win": "vite build && electron-builder --win nsis --publish never",
+    "build:mac": "vite build && electron-builder --mac --publish never",
     "vite": "vite",
     "start": "electron ."
   },
