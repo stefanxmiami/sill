@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Frame from '../components/Frame.jsx';
 import EmptyVault from '../components/EmptyVault.jsx';
+import Inline from '../inline.jsx';
 import { useVaultData } from '../hooks.js';
 
 const SPINE = {
@@ -75,7 +76,7 @@ function Row({ task, onToggle }) {
       <button style={styles.checkbox} onClick={onToggle} title="Complete">
         <span style={styles.checkInner} />
       </button>
-      <span style={styles.text}>{task.text}</span>
+      <span style={styles.text}><Inline text={task.text} /></span>
       {task.due && (
         <span className="mono" style={styles.due}>
           {formatDue(task.due, task.urgency)}
