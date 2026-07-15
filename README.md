@@ -1,10 +1,10 @@
 # Sill
 
 **Obsidian notes, on your desktop.** Frameless, translucent Obsidian vault
-widgets for Windows 11 that rest on your wallpaper. One Electron process drives
-four transparent windows (Tasks, Daily Note, Quick Capture, Recent Notes), each
-loading the same Vite/React bundle with a different `?widget=` query param and
-reading/writing the vault directly via `fs`.
+widgets for Windows and macOS that rest on your wallpaper. One Electron process
+drives four transparent windows (Tasks, Daily Note, Quick Capture, Recent Notes),
+each loading the same Vite/React bundle with a different `?widget=` query param
+and reading/writing the vault directly via `fs`.
 
 The mark is two overlapping glass panes with a gold urgency spine; palette is
 obsidian `#0B0C0E`, panel `#0E0F12`, ice `#E6E8EB`, muted `#8A909C`, gold
@@ -45,6 +45,28 @@ CACHE="$LOCALAPPDATA/electron-builder/Cache/winCodeSign"
 ```
 
 (Or just enable Windows Developer Mode / run the terminal as Administrator.)
+
+## Build for macOS
+
+Must be run **on a Mac** — electron-builder can't cross-compile a `.app`/`.dmg`
+from Windows.
+
+```bash
+npm install
+npm run build:mac   # vite build -> electron-builder --mac  (dmg + zip in release/)
+```
+
+Then open the `.dmg`, drag **Sill** to Applications, and launch. Because it's
+unsigned (free), Gatekeeper will say "unidentified developer" on first run —
+right-click the app → **Open**, or System Settings → Privacy & Security →
+**Open Anyway**. To run without building, `npm run dev` works on the Mac too.
+
+Platform differences, handled automatically:
+- The tray lives in the **menu bar** (top-right) with a monochrome template icon;
+  on Windows it's the color mark in the notification area.
+- The "wallpaper blur" appearance toggle maps to macOS **vibrancy** (vs Win11
+  acrylic).
+- Clicking the **Dock** icon resurfaces the widgets (`activate`).
 
 ## Tray & hotkeys
 

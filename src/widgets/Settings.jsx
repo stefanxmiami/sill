@@ -92,8 +92,8 @@ export default function Settings() {
 
         <Section title="Startup">
           <Row
-            label="Start with Windows"
-            hint="Launch the widgets automatically when you log in. (Installed app only.)"
+            label="Launch at startup"
+            hint="Open the widgets automatically when you log in. (Installed app only.)"
             control={<Switch on={s.openAtLogin} onClick={toggleLogin} />}
           />
         </Section>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64" fill="none" stroke="#000000" stroke-width="3.4" stroke-linejoin="round">
+  <!-- two overlapping panes as line-art (menu-bar template is monochrome) -->
+  <rect x="21.9" y="7.5" width="37.4" height="28.8" rx="6.5"/>
+  <rect x="4.6" y="27.7" width="37.4" height="28.8" rx="6.5"/>
+  <line x1="10.4" y1="31.6" x2="22.6" y2="31.6" stroke-linecap="round"/>
+  <rect x="8.0" y="33.4" width="3.2" height="17.3" rx="1.6" fill="#000000" stroke="none"/>
+</svg>

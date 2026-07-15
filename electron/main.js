@@ -15,6 +15,7 @@ let tray = null;
 let settingsWin = null;
 
 const ICON = path.join(__dirname, '../build/icon.ico');
+const isMac = process.platform === 'darwin';
 
 // Shared AppUserModelID → the widget windows collapse into one Sill taskbar
 // button (and match the installed shortcut's identity for correct icon/grouping).
@@ -53,9 +54,11 @@ function createWidget(id) {
     resizable: true,
     hasShadow: false,
     alwaysOnTop: pinned,
-    // acrylic gives real wallpaper blur, but it cannot be combined with transparent
+    // "blur" = Win11 acrylic / macOS vibrancy; neither can combine with transparent
     ...(acrylic
-      ? { backgroundMaterial: 'acrylic', backgroundColor: '#00000000' }
+      ? (isMac
+          ? { vibrancy: 'under-window', visualEffectState: 'active', backgroundColor: '#00000000' }
+          : { backgroundMaterial: 'acrylic', backgroundColor: '#00000000' })
       : { transparent: true, backgroundColor: '#00000000' }),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -151,7 +154,7 @@ function refreshTray() {
         click: (mi) => setPin(id, mi.checked),
       })),
     },
-    { label: 'Start with Windows', type: 'checkbox', checked: config.get('openAtLogin') === true, click: (mi) => setOpenAtLogin(mi.checked) },
+    { label: 'Launch at startup', type: 'checkbox', checked: config.get('openAtLogin') === true, click: (mi) => setOpenAtLogin(mi.checked) },
     { type: 'separator' },
     { label: 'Preferences…', click: () => openSettings() },
     { label: 'Choose vault…', click: () => pickVault() },
@@ -196,9 +199,12 @@ function openSettings() {
 }
 
 function createTray() {
+  // macOS menu bar wants a monochrome template image; Windows uses the color mark
+  const file = isMac ? 'assets/trayTemplate.png' : 'assets/tray.png';
   const img = nativeImage
-    .createFromPath(path.join(__dirname, 'assets/tray.png'))
+    .createFromPath(path.join(__dirname, file))
     .resize({ width: 16, height: 16 });
+  if (isMac) img.setTemplateImage(true);
   tray = new Tray(img);
   tray.setToolTip('Sill');
   tray.on('click', toggleAll); // left-click toggles all widgets
@@ -231,7 +237,8 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('window-all-closed', () => {}); // stay alive in the tray
+app.on('window-all-closed', () => {}); // stay alive in the tray / menu bar
+app.on('activate', () => showAll()); // macOS: clicking the Dock icon resurfaces widgets
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
