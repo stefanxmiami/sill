@@ -72,3 +72,12 @@ jobs:
           files: artifacts/**/*
           generate_release_notes: true
           fail_on_unmatched_files: true
+          body: |
+            **Windows** — download the `.exe` below and run it. It's unsigned, so
+            SmartScreen shows "Windows protected your PC" → **More info → Run anyway**
+            (if downloaded to another PC, right-click → Properties → **Unblock** first).
+
+            **macOS** — open the `.dmg`, drag Sill to Applications. First launch:
+            right-click the app → **Open** to get past Gatekeeper (unsigned).
+
+            ---
