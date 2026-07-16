@@ -14,6 +14,16 @@ const DONE_EMOJI = /\s*✅\s*\d{4}-\d{2}-\d{2}/;
 const PRIORITY   = /(🔺|⏫|🔼|🔽|⏬)/;
 const META       = /(📅|⏳|🛫|➕|✅)\s*\d{4}-\d{2}-\d{2}|🔺|⏫|🔼|🔽|⏬|#[\w/-]+/g;
 
+// local calendar date as YYYY-MM-DD (not UTC — "today" must match the user's clock)
+function localISO(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function addDays(d, n) {
+  const c = new Date(d);
+  c.setDate(c.getDate() + n);
+  return c;
+}
+
 function open(vaultPath, onChange) {
   root = vaultPath;
   cache.clear();
@@ -74,14 +84,20 @@ async function parseFile(abs) {
 async function listTasks() {
   const files = await walk(root);
   const all = (await Promise.all(files.map(parseFile))).flat();
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = localISO(now);
+  const tomorrow = localISO(addDays(now, 1));
+  const weekEnd = localISO(addDays(now, 7)); // "this week" = the next 7 days
   return all
     .filter(t => !t.done)
     .map(t => ({
       ...t,
       urgency: !t.due ? 'none'
              : t.due < today ? 'overdue'
-             : t.due === today ? 'today' : 'later',
+             : t.due === today ? 'today'
+             : t.due === tomorrow ? 'tomorrow'
+             : t.due <= weekEnd ? 'week'
+             : 'later',
     }))
     .sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999'));
 }
@@ -117,9 +133,7 @@ async function capture(text) {
 }
 
 function todayPath() {
-  const d = new Date();
-  const name = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.md`;
-  return path.join(root, 'Daily', name);   // point this at your daily notes folder
+  return path.join(root, 'Daily', `${localISO(new Date())}.md`);   // point this at your daily notes folder
 }
 
 async function getDaily() {

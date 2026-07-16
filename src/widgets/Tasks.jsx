@@ -7,6 +7,8 @@ import { useVaultData } from '../hooks.js';
 const SPINE = {
   overdue: 'var(--overdue)',
   today: 'var(--today)',
+  tomorrow: 'var(--later)',
+  week: 'var(--later)',
   later: 'var(--later)',
   none: 'transparent',
 };
@@ -14,9 +16,13 @@ const SPINE = {
 const GROUPS = [
   { key: 'overdue', label: 'Overdue' },
   { key: 'today', label: 'Today' },
-  { key: 'later', label: 'Upcoming' },
+  { key: 'tomorrow', label: 'Tomorrow' },
+  { key: 'week', label: 'This week' },
+  { key: 'later', label: 'Later' },
   { key: 'none', label: 'No date' },
 ];
+
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function Tasks() {
   const { data, error, reload } = useVaultData(() => window.api.listTasks());
@@ -94,7 +100,9 @@ const keyOf = (t) => `${t.file}:${t.line}`;
 
 function formatDue(due, urgency) {
   if (urgency === 'today') return 'today';
-  // show MM-DD, the year is noise at a glance
+  if (urgency === 'tomorrow') return 'tmrw';
+  // within the week: show the weekday; otherwise MM-DD (year is noise at a glance)
+  if (urgency === 'week') return WEEKDAYS[new Date(`${due}T00:00:00`).getDay()];
   return due.slice(5);
 }
 
